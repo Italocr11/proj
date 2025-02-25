@@ -29,5 +29,10 @@ export class ReservaController {
     );
   }
 
+//Quadro de horários
+@Get('quadro')
+async buscarReservasPorData(@Query('data') data: string): Promise<Reserva[]> {
+  return this.reservaService.buscarReservasPorData(data);
+}
 
 }
