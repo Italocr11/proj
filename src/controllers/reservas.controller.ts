@@ -60,6 +60,14 @@ async buscarReservasPorData(@Query('data') data: string): Promise<Reserva[]> {
     return this.reservaService.buscarReservasPorEmailEData(userEmail);
   }
 
+    //Buscar pelo e-mail (histórico)
+
+    @Get('historico')
+    async buscarReservasPorEmail(
+      @Query('userEmail') userEmail: string, // O parâmetro "userEmail" vem da query string
+    ): Promise<Reserva[]> {
+      return this.reservaService.buscarReservasPorEmail(userEmail);
+    }
   
 
 }

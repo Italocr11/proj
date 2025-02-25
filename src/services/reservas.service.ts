@@ -101,4 +101,17 @@ async buscarReservasPorEmailEData(userEmail: string): Promise<Reserva[]> {
     return dataReserva >= hoje; // Mantendo apenas as reservas futuras
   });
 }
+
+
+  // Histórico: buscar TODAS as reservas, ordenando da mais recente para a mais antiga
+  async buscarReservasPorEmail(userEmail: string): Promise<Reserva[]> {
+    if (!userEmail) {
+      throw new Error('O parâmetro userEmail é obrigatório');
+    }
+
+    return this.reservaRepository.find({
+      where: { userEmail },
+      order: { data: 'DESC' }, // Ordena da mais recente para a mais antiga
+    });
+  }
 }
