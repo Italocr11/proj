@@ -61,5 +61,23 @@ async login(usuario: Usuario) {
   return { message: 'Login feito com sucesso!', usuario };
 }
 
+ //Alterar senha
+
+ async altSenha(
+  email: string,
+  senha: string,
+  novaSenha: string,
+): Promise<boolean> {
+  const usuario = await this.usuarioRepository.findOne({ where: { email } });
+
+  if (!usuario || usuario.senha !== senha) {
+    return false;
+  }
+
+  usuario.senha = novaSenha;
+  await this.usuarioRepository.save(usuario);
+  return true;
+}
+
   
 }
