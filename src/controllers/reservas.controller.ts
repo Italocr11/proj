@@ -48,4 +48,18 @@ async buscarReservasPorData(@Query('data') data: string): Promise<Reserva[]> {
       return `Erro ao deletar a reserva: ${error.message}`;
     }
   }
+
+  @Get('interface')
+  async buscarReservasPorEmailEData(
+    @Query('userEmail') userEmail: string, // O parâmetro "userEmail" vem da query string
+  ): Promise<Reserva[]> {
+    if (!userEmail) {
+      throw new Error('O parâmetro userEmail é obrigatório');
+    }
+
+    return this.reservaService.buscarReservasPorEmailEData(userEmail);
+  }
+
+  
+
 }
