@@ -75,4 +75,43 @@ async buscarReservasPorData(data: string): Promise<Reserva[]> {
   }
 }
 
+
+async buscarReservasPorEmailEData(userEmail: string): Promise<Reserva[]> {
+  if (!userEmail) {
+    throw new Error('O parâmetro userEmail é obrigatório');
+  }
+
+  // Obtendo a data de hoje no formato DD-MM-YYYY
+  const hoje = new Date();
+  const dia = String(hoje.getDate()).padStart(2, '0');
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // Meses começam do 0, então somamos 1
+  const ano = hoje.getFullYear();
+  const hojeFormatted = `${dia}-${mes}-${ano}`; // Mantendo no formato DD-MM-YYYY
+
+  // Buscar todas as reservas e filtrar as futuras manualmente
+  const reservas = await this.reservaRepository.find({
+    where: { userEmail },
+    order: { data: 'ASC' }, // Ordena da mais próxima para a mais distante
+  });
+
+  // Filtrar as reservas futuras manualmente
+  return reservas.filter((reserva) => {
+    const [d, m, y] = reserva.data.split('-').map(Number); // Convertendo para números
+    const dataReserva = new Date(y, m - 1, d); // Criando objeto Date
+    return dataReserva >= hoje; // Mantendo apenas as reservas futuras
+  });
+}
+
+
+  // Histórico: buscar TODAS as reservas, ordenando da mais recente para a mais antiga
+  async buscarReservasPorEmail(userEmail: string): Promise<Reserva[]> {
+    if (!userEmail) {
+      throw new Error('O parâmetro userEmail é obrigatório');
+    }
+
+    return this.reservaRepository.find({
+      where: { userEmail },
+      order: { data: 'DESC' }, // Ordena da mais recente para a mais antiga
+    });
+  }
 }
