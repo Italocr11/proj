@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { UsuariosService } from '../services/usuarios.service';
 import { Usuario } from '../entities/usuarios.entity';
+import { AlterarsenhaDto } from '../DTOs/alterar-senha.dto';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -45,5 +46,25 @@ export class UsuariosController {
 
     return this.usuariosService.login(usuario);
   }
+
+  @Patch('altsenha')
+  async novaSenha(@Body() alterarsenhaDto: AlterarsenhaDto) {
+    const { email, senha, senhaNova } = alterarsenhaDto;
+    const sucesso = await this.usuariosService.altSenha(
+      email,
+      senha,
+      senhaNova,
+    );
+
+    if (!sucesso) {
+      throw new HttpException(
+        'Senha atual incorreta ou usuário não encontrado!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return { message: 'Senha alterada com sucesso!' };
+  }
+
 
 }
