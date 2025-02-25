@@ -35,4 +35,17 @@ async buscarReservasPorData(@Query('data') data: string): Promise<Reserva[]> {
   return this.reservaService.buscarReservasPorData(data);
 }
 
+@Delete('cancelar')
+  async deletarReserva(
+    @Query('userEmail') userEmail: string, // Parâmetros vindo da query string
+    @Query('data') data: string,
+    @Query('horario') horario: string,
+  ): Promise<string> {
+    try {
+      await this.reservaService.deletarReserva(userEmail, data, horario);
+      return 'Reserva deletada com sucesso';
+    } catch (error) {
+      return `Erro ao deletar a reserva: ${error.message}`;
+    }
+  }
 }
