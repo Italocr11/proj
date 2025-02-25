@@ -46,5 +46,20 @@ export class UsuariosService {
     }
   }
 
+  //Login
+
+async validarUsuario(email: string, senha: string): Promise<Usuario | null> {
+  const usuario = await this.usuarioRepository.findOne({ where: { email } });
+
+  if (usuario && senha === usuario.senha) {
+    return usuario;
+  }
+  return null;
+}
+
+async login(usuario: Usuario) {
+  return { message: 'Login feito com sucesso!', usuario };
+}
+
   
 }

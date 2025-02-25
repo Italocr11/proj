@@ -33,4 +33,17 @@ export class UsuariosController {
   async deletarUsuarioID(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.usuariosService.deletarUsuarioID(id);
   }
+
+  @Post('login')
+  async login(@Body() body: { email: string; senha: string }) {
+    const { email, senha } = body;
+    const usuario = await this.usuariosService.validarUsuario(email, senha);
+
+    if (!usuario) {
+      throw new UnauthorizedException('Informações Inválidas!');
+    }
+
+    return this.usuariosService.login(usuario);
+  }
+
 }
