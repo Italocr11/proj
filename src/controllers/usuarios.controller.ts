@@ -14,6 +14,7 @@ import {
 import { UsuariosService } from '../services/usuarios.service';
 import { Usuario } from '../entities/usuarios.entity';
 import { AlterarsenhaDto } from '../DTOs/alterar-senha.dto';
+import { AlterarEmailDto } from '../DTOs/alterar-email.dto';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -64,6 +65,61 @@ export class UsuariosController {
     }
 
     return { message: 'Senha alterada com sucesso!' };
+  }
+
+  @Patch('altemail')
+  async novoEmail(@Body() alterarEmailDto: AlterarEmailDto) {
+    const { email, novoEmail, senha } = alterarEmailDto;
+    const sucesso = await this.usuariosService.altEmail(
+      email,
+      novoEmail,
+      senha,
+    );
+
+    if (!sucesso) {
+      throw new HttpException(
+        'Email atual incorreto ou usuário não encontrado!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return { message: 'Email alterado com sucesso!', usuario: sucesso };
+  }
+
+  @Patch('altnome')
+  async novoNome(@Body() body: { email: string; nome: string }) {
+    const { email, nome } = body;
+    const sucesso = await this.usuariosService.altNome(email, nome);
+
+    if (!sucesso) {
+      throw new HttpException(
+        'Usuário não encontrado!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return {
+      message: 'Nome alterado com sucesso!',
+      usuario: sucesso,
+    };
+  }
+
+  @Patch('alttel')
+  async novoTelefone(@Body() body: { email: string; telefone: string }) {
+    const { email, telefone } = body;
+    const sucesso = await this.usuariosService.altTelefone(email, telefone);
+
+    if (!sucesso) {
+      throw new HttpException(
+        'Usuário não encontrado!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return {
+      message: 'Telefone alterado com sucesso!',
+      usuario: sucesso,
+    };
   }
 
 
