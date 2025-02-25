@@ -1,24 +1,23 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ReservaModule } from './modules/reservas.module';
-import { UsuariosModule } from './modules/usuarios.module';
-import { NotificacaoModule } from './modules/notif.module';
+import { ReservasModule } from './modules/reservas.module';
+import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Module({
   imports: [
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: 'database.sqlite',
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
-          synchronize: true, // Apenas para desenvolvimento
-        }),
-        ReservaModule,
-        UsuariosModule,
-        NotificacaoModule,
-      ],
-  controllers: [AppController],
-  providers: [AppService],
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'dev.db',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
+    ReservasModule,
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('*'); // Aplica o middleware para todas as rotas
+  }
+}
