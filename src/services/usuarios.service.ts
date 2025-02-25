@@ -79,5 +79,67 @@ async login(usuario: Usuario) {
   return true;
 }
 
+  //Alterar email
+
+  async altEmail(email: string, novoEmail: string, senha: string) {
+    const verifEmail = await this.usuarioRepository.findOne({
+      where: { email: novoEmail },
+    });
+
+    if (verifEmail) {
+      throw new BadRequestException(`O email ${novoEmail} já está em uso!`);
+    }
+
+    const usuario = await this.usuarioRepository.findOne({ where: { email } });
+
+    if (!usuario) {
+      throw new NotFoundException(
+        `Usuário com o email ${email} não encontrado!`,
+      );
+    }
+
+    if (!usuario || usuario.senha !== senha) {
+      throw new BadRequestException(
+        `Senha incorreta ou usuário não encontrado!`,
+      );
+    }
+
+    usuario.email = novoEmail;
+    await this.usuarioRepository.save(usuario);
+
+    return usuario;
+  }
+
+
+  //Alterar nome
+  async altNome(email: string, nome: string): Promise<Usuario> {
+    const usuario = await this.usuarioRepository.findOne({ where: { email } });
+
+    if (!usuario) {
+      throw new NotFoundException(
+        `Usuário com o email ${email} não encontrado!`,
+      );
+    }
+
+    usuario.nome = nome;
+    await this.usuarioRepository.save(usuario);
+    return usuario;
+  }
+
+  //Alterar telefone
+  async altTelefone(email: string, telefone: string): Promise<Usuario> {
+    const usuario = await this.usuarioRepository.findOne({ where: { email } });
+
+    if (!usuario) {
+      throw new NotFoundException(
+        `Usuário com o email ${email} não encontrado!`,
+      );
+    }
+
+    usuario.telefone = telefone;
+    await this.usuarioRepository.save(usuario);
+    return usuario;
+  }
+
   
 }
