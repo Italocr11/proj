@@ -55,4 +55,24 @@ async buscarReservasPorData(data: string): Promise<Reserva[]> {
     return dataBancoNormalizada === dataNormalizada;
   });
 }
+
+ // Método para deletar uma reserva dada a data, horário e email
+ async deletarReserva(
+  userEmail: string,
+  data: string,
+  horario: string,
+): Promise<void> {
+  const resultado = await this.reservaRepository.delete({
+    userEmail,
+    data,
+    horario,
+  });
+
+  if (resultado.affected === 0) {
+    throw new Error(
+      'Nenhuma reserva encontrada para deletar com os parâmetros fornecidos.',
+    );
+  }
+}
+
 }
