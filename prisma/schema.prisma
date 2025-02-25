@@ -35,4 +35,13 @@ model Reserva {
   usuario         Usuario     @relation("UsuarioReservas", fields: [userId], references: [id])
 
   @@map("Reserva")
+
+model PasswordResetToken {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  token      String   @unique
+  expiration DateTime
+  usuario    Usuario  @relation(fields: [userId], references: [id])
+
+  @@map("PasswordResetToken")
 }
