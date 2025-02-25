@@ -33,5 +33,26 @@ export class ReservaService {
     return this.reservaRepository.save(reserva);
   }
 
+//Quadro de horários
+async buscarReservasPorData(data: string): Promise<Reserva[]> {
+  if (!data) {
+    throw new Error('O parâmetro data é obrigatório');
+  }
 
+  // Quebrar a data recebida e remover zeros à esquerda para padronizar
+  const [dia, mes, ano] = data.split('-').map((str) => String(Number(str))); // Remove zeros à esquerda
+
+  const dataNormalizada = `${dia}-${mes}-${ano}`;
+
+  // Buscar todas as reservas e filtrar no código garantindo a normalização
+  const reservas = await this.reservaRepository.find();
+
+  return reservas.filter((reserva) => {
+    const [d, m, y] = reserva.data
+      .split('-')
+      .map((str) => String(Number(str))); // Normaliza a data do banco
+    const dataBancoNormalizada = `${d}-${m}-${y}`;
+    return dataBancoNormalizada === dataNormalizada;
+  });
+}
 }
